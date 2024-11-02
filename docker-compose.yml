@@ -8,17 +8,19 @@ services:
       dockerfile: Dockerfile
     container_name: 'app-${APP_NAME}'
     ports:
-      - '3000:3000'
+      - '3333:${APP_PORT}'
     environment:
       - DATABASE_HOST=database
       - DATABASE_PORT=${DATABASE_PORT}
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASS}
+      - PROMETHEUS_PORT=9090
     depends_on:
       - database
+      - prometheus
     networks:
-      - app-net
+      - app
     env_file:
       - .env
 
@@ -36,7 +38,7 @@ services:
     volumes:
       - 'mysql_data:/bitnami/mysql'
     networks:
-      - app-net
+      - app
     env_file:
       - .env
 
@@ -51,10 +53,21 @@ services:
     volumes:
       - 'grafana_data:/var/lib/grafana'
     networks:
-      - app-net
+      - app
+
+  # Prometheus
+  prometheus:
+    image: prom/prometheus
+    container_name: 'prometheus-${APP_NAME}'
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - app
 
 networks:
-  app-net:
+  app:
     driver: bridge
 
 volumes:

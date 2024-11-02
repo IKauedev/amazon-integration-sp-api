@@ -18,7 +18,7 @@ export class ExcelWriteService {
                 worksheet.addRow(this.mapDataToRow(item));
             });
 
-            await workbook.xlsx.writeFile(fileName);
+            await workbook.xlsx.writeFile(fileName.concat('.xlsx'));
         } catch (error) {
             throw new Error(`Erro ao gerar a planilha: ${error}`)
         }

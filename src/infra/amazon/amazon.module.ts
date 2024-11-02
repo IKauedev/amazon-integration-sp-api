@@ -4,6 +4,7 @@ import { AmazonService } from './service/amazon-sp.service';
 import { AmazonScrapperService } from './service/amazon-scrapper.service';
 import { AmazonProduct } from 'amazon-product-scrapper';
 import { ExcelModule } from '@infra/excel/excel.module';
+import { Counter } from 'prom-client';
 
 @Module({
   imports: [
@@ -42,6 +43,17 @@ import { ExcelModule } from '@infra/excel/excel.module';
         });
       },
       inject: [ConfigService],
+    },
+    {
+      provide: 'AMAZON_EXTRACT_COUNTER',
+      useFactory: () => {
+        const counter = new Counter({
+          name: 'amazon_extract_requests_total',
+          help: 'Total number of extract requests to Amazon',
+          labelNames: ['status'],
+        });
+        return counter;
+      },
     },
   ],
   exports: [AmazonService, AmazonScrapperService],

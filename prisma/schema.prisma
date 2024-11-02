@@ -1,20 +1,27 @@
-// datasource db {
-//   provider = "mysql"
-//   url      = env("DATABASE_URL")
-// }
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
 
-// generator client {
-//   provider      = "prisma-client-js"
-//   binaryTargets = ["native", "linux-musl", "rhel-openssl-1.0.x"]
-// }
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "rhel-openssl-1.0.x"]
+}
 
-// model ClientAmazon {
-//   id    String @id
-//   email String @unique
-//   token String @unique
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
 
-//   created_at DateTime @default(now())
-//   updated_at DateTime @default(now()) @updatedAt
-
-//   @@map("users")
-// }
+model Integration {
+  id          String   @id @default(cuid())
+  name        String 
+  appKey      String 
+  appSecret   String
+  endpointUrl String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
